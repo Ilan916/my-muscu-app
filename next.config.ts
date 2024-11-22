@@ -1,16 +1,17 @@
 import withPWA from 'next-pwa';
 
-// Configuration PWA
-const pwaConfig = {
-  dest: 'public', // Destination des fichiers générés par next-pwa
-  disable: process.env.NODE_ENV === 'development', 
-};
-
-// Configuration globale Next.js
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true, // Mode strict pour React
-  swcMinify: true, // Minification avec SWC
+    reactStrictMode: true,      // Enable React strict mode for improved error handling
+    swcMinify: true,            // Enable SWC minification for improved performance
+    compiler: {
+        removeConsole: process.env.NODE_ENV !== "development"     // Remove console.log in production
+    }
 };
 
-// Fusion des deux configurations
-export default withPWA(pwaConfig)(nextConfig);
+export default withPWA({
+    dest: "public",         // destination directory for the PWA files
+    disable: process.env.NODE_ENV === "development",        // disable PWA in the development environment
+    register: true,         // register the PWA service worker
+    skipWaiting: true,      // skip waiting for service worker activation
+})(nextConfig);
