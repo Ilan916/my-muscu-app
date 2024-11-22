@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || "",
+  apiKey: process.env.OPENAI_API_KEY || "", // Assure-toi que ta clé est dans .env.local
 });
 
 export async function POST(req: NextRequest) {
@@ -30,11 +30,26 @@ export async function POST(req: NextRequest) {
     const completion = response.choices[0].message;
 
     return NextResponse.json({ success: true, message: completion });
-  } catch (error: any) {
-    console.error("Erreur GPT:", error.message);
-    return NextResponse.json(
-      { success: false, message: "Erreur interne lors de la communication avec OpenAI" },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    // Gestion des erreurs sans utiliser `any`
+    if (error instanceof Error) {
+      console.error("Erreur GPT:", error.message);
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Erreur interne lors de la communication avec OpenAI",
+        },
+        { status: 500 }
+      );
+    } else {
+      console.error("Erreur inconnue:", error);
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Une erreur inconnue est survenue.",
+        },
+        { status: 500 }
+      );
+    }
   }
 }
