@@ -1,4 +1,5 @@
 import "./globals.css";
+import StickyNav from "./components/StickyNav";
 
 
 export default function RootLayout({
@@ -13,6 +14,7 @@ export default function RootLayout({
       </head>
       <body>
         {children}
+        <StickyNav />
       </body>
     </html>
   );
